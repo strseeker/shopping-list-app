@@ -3,7 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const FILE_URL = `file:///${__dirname.replace(/\\/g, '/')}/shopping-list.html`;
+const FILE_URL = `file:///${__dirname.replace(/\\/g, '/')}/index.html`;
 
 // 테스트 결과 추적
 const results = [];

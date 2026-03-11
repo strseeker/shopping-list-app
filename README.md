@@ -13,7 +13,7 @@
 
 ## 사용 방법
 
-`shopping-list.html` 파일을 브라우저에서 열면 바로 실행됩니다.
+`index.html` 파일을 브라우저에서 열면 바로 실행됩니다.
 
 ## 테스트 실행
 
@@ -26,7 +26,7 @@ node test-shopping.mjs
 ## 파일 구조
 
 ```
-├── shopping-list.html   # 메인 앱
+├── index.html           # 메인 앱
 ├── test-shopping.mjs    # Playwright 자동 테스트
 ├── package.json
 ├── PRD_step1.md         # 문제 정의 및 현황 분석
