@@ -1,12 +1,12 @@
 {
-  "name": "shopping-list-app",
+  "name": "study-06",
   "version": "1.0.0",
-  "description": "쇼핑 리스트 웹 앱 - 바닐라 JS, localStorage 저장, 필터 기능",
+  "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "node test-shopping.mjs"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["shopping-list", "vanilla-js", "html"],
+  "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",

@@ -267,12 +267,23 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    let items = JSON.parse(localStorage.getItem('shopping') || '[]');
+    const SUPABASE_URL = 'https://rpqyvmntdffsvnymdcoc.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJwcXl2bW50ZGZmc3ZueW1kY29jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNTY0NzYsImV4cCI6MjA4ODgzMjQ3Nn0.VVrCJYT_vTayZ_q1TpdFW20L3CXBfIEdcrgY17Pvudo';
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    let items = [];
     let filter = 'all';
 
-    function save() {
-      localStorage.setItem('shopping', JSON.stringify(items));
+    async function loadItems() {
+      const { data, error } = await db
+        .from('shopping_items')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (error) { console.error('로드 실패:', error); return; }
+      items = data;
+      render();
     }
 
     function render() {
@@ -317,31 +328,51 @@
         </li>`).join('');
     }
 
-    function addItem() {
+    async function addItem() {
       const input = document.getElementById('newItem');
       const text = input.value.trim();
       if (!text) { input.focus(); return; }
-      items.unshift({ id: Date.now(), text, done: false });
+      const { data, error } = await db
+        .from('shopping_items')
+        .insert({ text, done: false })
+        .select()
+        .single();
+      if (error) { console.error('추가 실패:', error); return; }
+      items.unshift(data);
       input.value = '';
       input.focus();
-      save();
       render();
     }
 
-    function toggle(id) {
+    async function toggle(id) {
       const it = items.find(i => i.id === id);
-      if (it) { it.done = !it.done; save(); render(); }
-    }
-
-    function remove(id) {
-      items = items.filter(i => i.id !== id);
-      save();
+      if (!it) return;
+      const { error } = await db
+        .from('shopping_items')
+        .update({ done: !it.done })
+        .eq('id', id);
+      if (error) { console.error('수정 실패:', error); return; }
+      it.done = !it.done;
       render();
     }
 
-    function clearDone() {
+    async function remove(id) {
+      const { error } = await db
+        .from('shopping_items')
+        .delete()
+        .eq('id', id);
+      if (error) { console.error('삭제 실패:', error); return; }
+      items = items.filter(i => i.id !== id);
+      render();
+    }
+
+    async function clearDone() {
+      const { error } = await db
+        .from('shopping_items')
+        .delete()
+        .eq('done', true);
+      if (error) { console.error('일괄 삭제 실패:', error); return; }
       items = items.filter(i => !i.done);
-      save();
       render();
     }
 
@@ -361,7 +392,7 @@
       if (e.key === 'Enter') addItem();
     });
 
-    render();
+    loadItems();
   </script>
 </body>
 </html>
